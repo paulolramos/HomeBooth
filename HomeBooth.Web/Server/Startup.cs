@@ -8,6 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using HomeBooth.Data;
 using HomeBooth.Data.Models;
+using HomeBooth.Web.Server.Areas.Identity.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Npgsql;
 
 namespace HomeBooth.Web.Server
 {
@@ -22,10 +25,17 @@ namespace HomeBooth.Web.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionBuilder = new NpgsqlConnectionStringBuilder(Configuration.GetConnectionString("homebooth"))
+            {
+                Password = Configuration["DbPassword"]
+            };
+
+            var dbConnection = connectionBuilder.ConnectionString;
+
             services.AddDbContext<HomeBoothDbContext>(options =>
             {
                 options.EnableDetailedErrors();
-                options.UseNpgsql(Configuration.GetConnectionString("homebooth"));
+                options.UseNpgsql(dbConnection);
             });
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -33,11 +43,11 @@ namespace HomeBooth.Web.Server
                 options.SignIn.RequireConfirmedAccount = true;
             }).AddEntityFrameworkStores<HomeBoothDbContext>();
 
-            services.AddIdentityServer()
-           .AddApiAuthorization<ApplicationUser, HomeBoothDbContext>();
+            services.AddIdentityServer().AddApiAuthorization<ApplicationUser, HomeBoothDbContext>();
+            services.AddAuthentication().AddIdentityServerJwt();
 
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<EmailSenderOptions>(Configuration.GetSection(EmailSenderOptions.EmailSender));
 
             services.AddControllersWithViews();
             services.AddRazorPages();
