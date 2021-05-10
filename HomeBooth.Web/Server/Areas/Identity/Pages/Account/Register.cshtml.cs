@@ -61,6 +61,11 @@ namespace HomeBooth.Web.Server.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required(ErrorMessage = "An Account Type must be selected.")]
+            [Display(Name = "Account Type")]
+            public string AccountType { get; set; } = "Client";
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
