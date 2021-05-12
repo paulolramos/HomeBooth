@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using HomeBooth.Data.Models;
+using HomeBooth.Web.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using HomeBooth.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +65,7 @@ namespace HomeBooth.Web.Server.Areas.Identity.Pages.Account
 
             [Required(ErrorMessage = "An Account Type must be selected.")]
             [Display(Name = "Account Type")]
-            public string AccountType { get; set; } = "Client";
+            public string AccountType { get; set; }
 
         }
 
@@ -80,11 +81,26 @@ namespace HomeBooth.Web.Server.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+                ApplicationUser user;
+                IdentityResult createUser;
+                IdentityResult addRole;
+
+                if (Input.AccountType == AccountType.StudioOwner)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    user = new StudioOwner { UserName = Input.Email, Email = Input.Email, CreatedOn = DateTime.UtcNow };
+                    createUser = await _userManager.CreateAsync(user, Input.Password);
+                    addRole = await _userManager.AddToRoleAsync(user, AccountType.StudioOwner);
+                }
+                else
+                {
+                    user = new Data.Models.Client { UserName = Input.Email, Email = Input.Email, CreatedOn = DateTime.UtcNow };
+                    createUser = await _userManager.CreateAsync(user, Input.Password);
+                    addRole = await _userManager.AddToRoleAsync(user, AccountType.Client);
+                }
+
+                if (createUser.Succeeded && addRole.Succeeded)
+                {
+                    _logger.LogInformation("User created a new account with password, account type, and role.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -107,7 +123,13 @@ namespace HomeBooth.Web.Server.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
-                foreach (var error in result.Errors)
+
+                foreach (var error in createUser.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                foreach (var error in addRole.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
