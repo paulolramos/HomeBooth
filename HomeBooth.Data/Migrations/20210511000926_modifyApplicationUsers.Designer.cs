@@ -3,15 +3,17 @@ using System;
 using HomeBooth.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HomeBooth.Data.Migrations
 {
     [DbContext(typeof(HomeBoothDbContext))]
-    partial class HomeBoothDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210511000926_modifyApplicationUsers")]
+    partial class modifyApplicationUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +32,6 @@ namespace HomeBooth.Data.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -563,12 +562,26 @@ namespace HomeBooth.Data.Migrations
                 {
                     b.HasBaseType("HomeBooth.Data.Models.ApplicationUser");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.HasDiscriminator().HasValue("Client");
                 });
 
             modelBuilder.Entity("HomeBooth.Data.Models.StudioOwner", b =>
                 {
                     b.HasBaseType("HomeBooth.Data.Models.ApplicationUser");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("StudioOwner_CreatedOn");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("StudioOwner_UpdatedOn");
 
                     b.HasDiscriminator().HasValue("StudioOwner");
                 });

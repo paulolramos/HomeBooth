@@ -46,6 +46,7 @@ namespace HomeBooth.Test.ServiceTests
             var _clientService = new ClientService(_context);
 
             var response = _clientService.CreateClient(testClient);
+            Assert.True(response.Data.IsClient);
             Assert.IsType<ServiceResponse<Client>>(response);
             Assert.Equal("Basil", response.Data.FirstName);
             Assert.Equal("Pilsner", response.Data.LastName);

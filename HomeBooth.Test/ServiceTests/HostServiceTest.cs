@@ -79,6 +79,7 @@ namespace HomeBooth.Test.ServiceTests
 
             var response = _hostService.CreateHost(host);
 
+            Assert.True(response.Data.IsStudioOwner);
             Assert.IsType<ServiceResponse<StudioOwner>>(response);
             Assert.NotNull(response.Data);
             Assert.Equal("Roger", response.Data.FirstName);

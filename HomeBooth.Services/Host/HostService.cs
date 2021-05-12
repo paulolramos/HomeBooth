@@ -20,6 +20,7 @@ namespace HomeBooth.Services.Host
         {
             try
             {
+                host.CreatedOn = DateTime.UtcNow;
                 _db.StudioOwners.Add(host);
                 _db.SaveChanges();
 
@@ -43,7 +44,7 @@ namespace HomeBooth.Services.Host
             }
         }
 
-        public ServiceResponse<StudioOwner> DeleteHost(int id)
+        public ServiceResponse<StudioOwner> DeleteHost(string id)
         {
             var now = DateTime.UtcNow;
             try
@@ -112,7 +113,7 @@ namespace HomeBooth.Services.Host
             }
         }
 
-        public ServiceResponse<StudioOwner> GetHostById(int id)
+        public ServiceResponse<StudioOwner> GetHostById(string id)
         {
             var now = DateTime.UtcNow;
             try

@@ -52,7 +52,7 @@ namespace HomeBooth.Services.Client
         /// </summary>
         /// <param name="id"></param>
         /// <returns>ServiceResponse<bool></returns>
-        public ServiceResponse<bool> DeleteClient(int id)
+        public ServiceResponse<bool> DeleteClient(string id)
         {
             var time = DateTime.UtcNow;
             var client = _db.Clients.Find(id);
@@ -132,7 +132,7 @@ namespace HomeBooth.Services.Client
         /// </summary>
         /// <param name="id"></param>
         /// <returns>ServiceResponse<Data.Models.Client></returns>
-        public ServiceResponse<Data.Models.Client> GetClientById(int id)
+        public ServiceResponse<Data.Models.Client> GetClientById(string id)
         {
             try
             {
