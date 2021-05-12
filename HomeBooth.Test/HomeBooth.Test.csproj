@@ -25,6 +25,6 @@
     <ProjectReference Include="..\HomeBooth.Services\HomeBooth.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ServiceTests\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 </Project>
