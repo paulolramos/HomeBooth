@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +10,12 @@ using HomeBooth.Data.Models;
 using HomeBooth.Web.Server.Areas.Identity.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Npgsql;
+using System;
+using Microsoft.AspNetCore.Identity;
+using HomeBooth.Web.Shared;
+using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace HomeBooth.Web.Server
 {
@@ -41,9 +46,20 @@ namespace HomeBooth.Web.Server
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = true;
-            }).AddEntityFrameworkStores<HomeBoothDbContext>();
+            }).AddRoles<IdentityRole>().AddEntityFrameworkStores<HomeBoothDbContext>();
 
-            services.AddIdentityServer().AddApiAuthorization<ApplicationUser, HomeBoothDbContext>();
+            services.AddIdentityServer().AddApiAuthorization<ApplicationUser, HomeBoothDbContext>(options =>
+            {
+                options.IdentityResources["openid"].UserClaims.Add("name");
+                options.ApiResources.Single().UserClaims.Add("name");
+                options.IdentityResources["openid"].UserClaims.Add("role");
+                options.ApiResources.Single().UserClaims.Add("role");
+            });
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
+
+            services.Configure<IdentityOptions>(options =>
+                options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
+
             services.AddAuthentication().AddIdentityServerJwt();
 
             services.AddTransient<IEmailSender, EmailSender>();
@@ -53,7 +69,7 @@ namespace HomeBooth.Web.Server
             services.AddRazorPages();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -84,6 +100,25 @@ namespace HomeBooth.Web.Server
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
             });
+
+            CreateRoles(serviceProvider);
+        }
+
+        private static void CreateRoles(IServiceProvider serviceProvider)
+        {
+            var roles = new string[] { AccountType.Client, AccountType.StudioOwner };
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            foreach (var role in roles)
+            {
+                var hasRole = roleManager.RoleExistsAsync(role);
+                hasRole.Wait();
+
+                if (!hasRole.Result)
+                {
+                    roleManager.CreateAsync(new IdentityRole(role)).Wait();
+                }
+            }
+
         }
     }
 }
