@@ -106,7 +106,7 @@ namespace HomeBooth.Web.Server
 
         private static void CreateRoles(IServiceProvider serviceProvider)
         {
-            var roles = new string[] { AccountType.Client, AccountType.StudioOwner };
+            var roles = new string[] { AccountType.Client, AccountType.Host };
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             foreach (var role in roles)
             {

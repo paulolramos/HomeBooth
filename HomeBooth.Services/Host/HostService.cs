@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using HomeBooth.Data;
-using HomeBooth.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeBooth.Services.Host
@@ -16,15 +15,15 @@ namespace HomeBooth.Services.Host
             _db = context;
         }
 
-        public ServiceResponse<StudioOwner> CreateHost(StudioOwner host)
+        public ServiceResponse<Data.Models.Host> CreateHost(Data.Models.Host host)
         {
             try
             {
                 host.CreatedOn = DateTime.UtcNow;
-                _db.StudioOwners.Add(host);
+                _db.Hosts.Add(host);
                 _db.SaveChanges();
 
-                return new ServiceResponse<StudioOwner>
+                return new ServiceResponse<Data.Models.Host>
                 {
                     Data = host,
                     IsSuccess = true,
@@ -34,7 +33,7 @@ namespace HomeBooth.Services.Host
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<StudioOwner>
+                return new ServiceResponse<Data.Models.Host>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -44,16 +43,16 @@ namespace HomeBooth.Services.Host
             }
         }
 
-        public ServiceResponse<StudioOwner> DeleteHost(string id)
+        public ServiceResponse<Data.Models.Host> DeleteHost(string id)
         {
             var now = DateTime.UtcNow;
             try
             {
-                var host = _db.StudioOwners.Find(id);
+                var host = _db.Hosts.Find(id);
 
                 if (host == null)
                 {
-                    return new ServiceResponse<StudioOwner>
+                    return new ServiceResponse<Data.Models.Host>
                     {
                         Data = null,
                         IsSuccess = false,
@@ -66,7 +65,7 @@ namespace HomeBooth.Services.Host
                     _db.Remove(host);
                     _db.SaveChanges();
 
-                    return new ServiceResponse<StudioOwner>
+                    return new ServiceResponse<Data.Models.Host>
                     {
                         Data = host,
                         IsSuccess = true,
@@ -78,7 +77,7 @@ namespace HomeBooth.Services.Host
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<StudioOwner>
+                return new ServiceResponse<Data.Models.Host>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -88,12 +87,12 @@ namespace HomeBooth.Services.Host
             }
         }
 
-        public ServiceResponse<List<StudioOwner>> GetAllHosts()
+        public ServiceResponse<List<Data.Models.Host>> GetAllHosts()
         {
             try
             {
-                var hosts = _db.StudioOwners.AsNoTracking().ToList();
-                return new ServiceResponse<List<StudioOwner>>
+                var hosts = _db.Hosts.AsNoTracking().ToList();
+                return new ServiceResponse<List<Data.Models.Host>>
                 {
                     Data = hosts,
                     IsSuccess = true,
@@ -103,7 +102,7 @@ namespace HomeBooth.Services.Host
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<List<StudioOwner>>
+                return new ServiceResponse<List<Data.Models.Host>>
                 {
                     Data = null,
                     IsSuccess = true,
@@ -113,15 +112,15 @@ namespace HomeBooth.Services.Host
             }
         }
 
-        public ServiceResponse<StudioOwner> GetHostById(string id)
+        public ServiceResponse<Data.Models.Host> GetHostById(string id)
         {
             var now = DateTime.UtcNow;
             try
             {
-                var host = _db.StudioOwners.Find(id);
+                var host = _db.Hosts.Find(id);
                 if (host == null)
                 {
-                    return new ServiceResponse<StudioOwner>
+                    return new ServiceResponse<Data.Models.Host>
                     {
                         Data = null,
                         IsSuccess = false,
@@ -131,7 +130,7 @@ namespace HomeBooth.Services.Host
                 }
                 else
                 {
-                    return new ServiceResponse<StudioOwner>
+                    return new ServiceResponse<Data.Models.Host>
                     {
                         Data = host,
                         IsSuccess = true,
@@ -142,7 +141,7 @@ namespace HomeBooth.Services.Host
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<StudioOwner>
+                return new ServiceResponse<Data.Models.Host>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -152,14 +151,14 @@ namespace HomeBooth.Services.Host
             }
         }
 
-        public ServiceResponse<StudioOwner> UpdateHost(StudioOwner host)
+        public ServiceResponse<Data.Models.Host> UpdateHost(Data.Models.Host host)
         {
             try
             {
                 _db.Update(host);
                 _db.SaveChanges();
 
-                return new ServiceResponse<StudioOwner>
+                return new ServiceResponse<Data.Models.Host>
                 {
                     Data = host,
                     IsSuccess = true,
@@ -169,7 +168,7 @@ namespace HomeBooth.Services.Host
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<StudioOwner>
+                return new ServiceResponse<Data.Models.Host>
                 {
                     Data = null,
                     IsSuccess = false,

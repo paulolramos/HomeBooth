@@ -5,10 +5,10 @@ namespace HomeBooth.Services.Host
 {
     public interface IHostService
     {
-        ServiceResponse<List<Data.Models.StudioOwner>> GetAllHosts();
-        ServiceResponse<Data.Models.StudioOwner> GetHostById(string id);
-        ServiceResponse<Data.Models.StudioOwner> CreateHost(Data.Models.StudioOwner host);
-        ServiceResponse<Data.Models.StudioOwner> UpdateHost(Data.Models.StudioOwner host);
-        ServiceResponse<Data.Models.StudioOwner> DeleteHost(string id);
+        ServiceResponse<List<Data.Models.Host>> GetAllHosts();
+        ServiceResponse<Data.Models.Host> GetHostById(string id);
+        ServiceResponse<Data.Models.Host> CreateHost(Data.Models.Host host);
+        ServiceResponse<Data.Models.Host> UpdateHost(Data.Models.Host host);
+        ServiceResponse<Data.Models.Host> DeleteHost(string id);
     }
 }

@@ -20,7 +20,7 @@ namespace HomeBooth.Data
         public DbSet<Studio> Studios { get; set; }
         public DbSet<StudioAddress> StudioAddresses { get; set; }
         public DbSet<StudioItem> StudioItems { get; set; }
-        public DbSet<StudioOwner> StudioOwners { get; set; }
+        public DbSet<Host> Hosts { get; set; }
         public DbSet<StudioSchedule> StudioSchedules { get; set; }
         public DbSet<StudioService> StudioServices { get; set; }
     }

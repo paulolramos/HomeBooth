@@ -14,7 +14,7 @@ namespace HomeBooth.Test.Services
         {
             CreatedOn = DateTime.UtcNow,
             Name = "The Hive",
-            Owner = new StudioOwner
+            Host = new Host
             {
                 CreatedOn = DateTime.UtcNow,
                 Email = "test@email.com",

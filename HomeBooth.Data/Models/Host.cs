@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HomeBooth.Data.Models
 {
-    public class StudioOwner : ApplicationUser
+    public class Host : ApplicationUser
     {
-        public bool IsStudioOwner = true;
+        public bool IsHost = true;
     }
 }

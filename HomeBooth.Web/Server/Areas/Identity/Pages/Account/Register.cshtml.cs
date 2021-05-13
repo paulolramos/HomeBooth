@@ -85,11 +85,11 @@ namespace HomeBooth.Web.Server.Areas.Identity.Pages.Account
                 IdentityResult createUser;
                 IdentityResult addRole;
 
-                if (Input.AccountType == AccountType.StudioOwner)
+                if (Input.AccountType == AccountType.Host)
                 {
-                    user = new StudioOwner { UserName = Input.Email, Email = Input.Email, CreatedOn = DateTime.UtcNow };
+                    user = new Host { UserName = Input.Email, Email = Input.Email, CreatedOn = DateTime.UtcNow };
                     createUser = await _userManager.CreateAsync(user, Input.Password);
-                    addRole = await _userManager.AddToRoleAsync(user, AccountType.StudioOwner);
+                    addRole = await _userManager.AddToRoleAsync(user, AccountType.Host);
                 }
                 else
                 {

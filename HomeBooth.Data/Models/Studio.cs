@@ -12,7 +12,7 @@ namespace HomeBooth.Data.Models
         public string Name { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
-        public StudioOwner Owner { get; set; }
+        public Host Host { get; set; }
         public StudioAddress Address { get; set; }
         public float Rate { get; set; }
         public string Description { get; set; }
