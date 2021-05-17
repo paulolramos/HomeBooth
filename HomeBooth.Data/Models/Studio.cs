@@ -23,7 +23,7 @@ namespace HomeBooth.Data.Models
         public int AddressId { get; set; }
 
         public List<StudioSchedule> Schedules { get; set; }
-        public List<StudioItem> Equipment { get; set; }
+        public List<StudioItem> StudioItems { get; set; }
         public List<StudioService> Services { get; set; }
     }
 }

@@ -47,7 +47,7 @@ namespace HomeBooth.Test.Services
                 },
             },
             Rate = 20,
-            Equipment = new List<StudioItem>
+            StudioItems = new List<StudioItem>
             {
                 new StudioItem
                 {
