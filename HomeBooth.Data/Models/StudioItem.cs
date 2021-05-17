@@ -14,5 +14,8 @@ namespace HomeBooth.Data.Models
         public int Quanitity { get; set; }
         public string ItemType { get; set; }
         public string Condition { get; set; }
+
+        public int StudioId { get; set; }
+        public Studio Studio { get; set; }
     }
 }
