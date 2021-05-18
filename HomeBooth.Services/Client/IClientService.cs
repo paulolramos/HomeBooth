@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HomeBooth.Services.Client
+namespace HomeBooth.Services
 {
     public interface IClientService
     {

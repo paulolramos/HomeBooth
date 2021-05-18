@@ -4,7 +4,7 @@ using System.Linq;
 using HomeBooth.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomeBooth.Services.Client
+namespace HomeBooth.Services
 {
     public class ClientService : IClientService
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HomeBooth.Services.StudioListing
+namespace HomeBooth.Services
 {
     public interface IStudioListingService
     {

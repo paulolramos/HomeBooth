@@ -4,7 +4,7 @@ using System.Linq;
 using HomeBooth.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomeBooth.Services.Host
+namespace HomeBooth.Services
 {
     public class HostService : IHostService
     {

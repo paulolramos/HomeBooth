@@ -1,5 +1,5 @@
 ﻿using System;
-namespace HomeBooth.Services.Reservation
+namespace HomeBooth.Services
 {
     public interface IReservationService
     {
