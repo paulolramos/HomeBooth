@@ -16,6 +16,9 @@ using HomeBooth.Web.Shared;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using AutoMapper;
+using HomeBooth.Web.Server.DTOs;
+using HomeBooth.Services;
 
 namespace HomeBooth.Web.Server
 {
@@ -67,6 +70,9 @@ namespace HomeBooth.Web.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddAutoMapper(c => c.AddProfile<AutoMapping>(), typeof(Startup));
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
