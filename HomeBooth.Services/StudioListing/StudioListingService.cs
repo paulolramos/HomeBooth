@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using HomeBooth.Data;
 using HomeBooth.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace HomeBooth.Services.StudioListing
+namespace HomeBooth.Services
 {
     public class StudioListingService : IStudioListingService
     {
@@ -114,7 +115,21 @@ namespace HomeBooth.Services.StudioListing
         {
             try
             {
-                var studios = (from s in _db.Studios select s).ToList();
+                var studios = (from s in _db.Studios
+                               .Include(s => s.Address)
+                               select s
+                               ).ToList();
+
+                if (studios.Count == 0)
+                {
+                    return new ServiceResponse<List<Studio>>
+                    {
+                        Data = studios,
+                        IsSuccess = true,
+                        Message = "No studios found.",
+                        Time = DateTime.UtcNow
+                    };
+                }
 
                 return new ServiceResponse<List<Studio>>
                 {
