@@ -1,30 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using HomeBooth.Data;
 using HomeBooth.Data.Models;
-using Microsoft.EntityFrameworkCore;
+using HomeBooth.Services.DTO;
 
 namespace HomeBooth.Services
 {
     public class StudioListingService : IStudioListingService
     {
         private readonly HomeBoothDbContext _db;
-        public StudioListingService(HomeBoothDbContext homeBoothDbContext)
+        private readonly IMapper _mapper;
+
+        public StudioListingService(HomeBoothDbContext homeBoothDbContext, IMapper mapper)
         {
             _db = homeBoothDbContext;
+            _mapper = mapper;
         }
 
-        public ServiceResponse<Studio> CreateListing(Studio listing)
+        public ServiceResponse<StudioListingDto> CreateListing(Studio listing)
         {
             try
             {
                 _db.Studios.Add(listing);
                 _db.SaveChanges();
 
-                return new ServiceResponse<Studio>
+                return new ServiceResponse<StudioListingDto>
                 {
-                    Data = listing,
+                    Data = _mapper.Map<StudioListingDto>(listing),
                     IsSuccess = true,
                     Message = $"Successfully created studio {listing.Id} to database",
                     Time = DateTime.UtcNow
@@ -32,7 +37,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Studio>
+                return new ServiceResponse<StudioListingDto>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -42,7 +47,7 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<Studio> DeleteListing(int id)
+        public ServiceResponse<StudioListingDto> DeleteListing(int id)
         {
             try
             {
@@ -52,9 +57,9 @@ namespace HomeBooth.Services
                     _db.Studios.Remove(studio);
                     _db.SaveChanges();
 
-                    return new ServiceResponse<Studio>
+                    return new ServiceResponse<StudioListingDto>
                     {
-                        Data = studio,
+                        Data = _mapper.Map<StudioListingDto>(studio),
                         IsSuccess = true,
                         Message = $"Studio Listing {studio.Id} successfully deleted.",
                         Time = DateTime.UtcNow
@@ -62,7 +67,7 @@ namespace HomeBooth.Services
                 }
                 else
                 {
-                    return new ServiceResponse<Studio>
+                    return new ServiceResponse<StudioListingDto>
                     {
                         Data = null,
                         IsSuccess = false,
@@ -73,7 +78,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Studio>
+                return new ServiceResponse<StudioListingDto>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -83,7 +88,7 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<List<Studio>> GetAllAvailableListings()
+        public ServiceResponse<List<StudioListingDto>> GetAllAvailableListings()
         {
             try
             {
@@ -91,9 +96,9 @@ namespace HomeBooth.Services
                                where s.IsBooked == false
                                select s).ToList();
 
-                return new ServiceResponse<List<Studio>>
+                return new ServiceResponse<List<StudioListingDto>>
                 {
-                    Data = studios,
+                    Data = _mapper.Map<List<StudioListingDto>>(studios),
                     IsSuccess = true,
                     Message = "Available studios successfully retrieved.",
                     Time = DateTime.UtcNow
@@ -101,7 +106,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<List<Studio>>
+                return new ServiceResponse<List<StudioListingDto>>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -111,7 +116,7 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<List<Studio>> GetAllListings()
+        public ServiceResponse<List<StudioListingDto>> GetAllListings()
         {
             try
             {
@@ -122,18 +127,18 @@ namespace HomeBooth.Services
 
                 if (studios.Count == 0)
                 {
-                    return new ServiceResponse<List<Studio>>
+                    return new ServiceResponse<List<StudioListingDto>>
                     {
-                        Data = studios,
+                        Data = _mapper.Map<List<StudioListingDto>>(studios),
                         IsSuccess = true,
                         Message = "No studios found.",
                         Time = DateTime.UtcNow
                     };
                 }
 
-                return new ServiceResponse<List<Studio>>
+                return new ServiceResponse<List<StudioListingDto>>
                 {
-                    Data = studios,
+                    Data = _mapper.Map<List<StudioListingDto>>(studios),
                     IsSuccess = true,
                     Message = "Studios successfully retrieved.",
                     Time = DateTime.UtcNow
@@ -141,7 +146,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<List<Studio>>
+                return new ServiceResponse<List<StudioListingDto>>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -151,7 +156,7 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<Studio> GetListingById(int id)
+        public ServiceResponse<StudioListingDto> GetListingById(int id)
         {
             try
             {
@@ -159,9 +164,9 @@ namespace HomeBooth.Services
 
                 if (studio is not null)
                 {
-                    return new ServiceResponse<Studio>
+                    return new ServiceResponse<StudioListingDto>
                     {
-                        Data = studio,
+                        Data = _mapper.Map<StudioListingDto>(studio),
                         IsSuccess = true,
                         Message = $"Successfully retrieved studio {studio.Id} from database",
                         Time = DateTime.UtcNow
@@ -169,7 +174,7 @@ namespace HomeBooth.Services
                 }
                 else
                 {
-                    return new ServiceResponse<Studio>
+                    return new ServiceResponse<StudioListingDto>
                     {
                         Data = null,
                         IsSuccess = false,
@@ -180,7 +185,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Studio>
+                return new ServiceResponse<StudioListingDto>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -190,7 +195,7 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<Studio> UpdateListing(int id, Studio listing)
+        public ServiceResponse<StudioListingDto> UpdateListing(int id, Studio listing)
         {
             try
             {
@@ -201,9 +206,9 @@ namespace HomeBooth.Services
                     _db.Studios.Update(listing);
                     _db.SaveChanges();
 
-                    return new ServiceResponse<Studio>
+                    return new ServiceResponse<StudioListingDto>
                     {
-                        Data = studio,
+                        Data = _mapper.Map<StudioListingDto>(studio),
                         IsSuccess = true,
                         Message = $"Successfully updated studio {studio.Id}.",
                         Time = DateTime.UtcNow
@@ -211,7 +216,7 @@ namespace HomeBooth.Services
                 }
                 else
                 {
-                    return new ServiceResponse<Studio>
+                    return new ServiceResponse<StudioListingDto>
                     {
                         Data = null,
                         IsSuccess = false,
@@ -222,7 +227,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Studio>
+                return new ServiceResponse<StudioListingDto>
                 {
                     Data = null,
                     IsSuccess = false,

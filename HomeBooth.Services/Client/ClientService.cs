@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using HomeBooth.Data;
+using HomeBooth.Data.Models;
+using HomeBooth.Services.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeBooth.Services
 {
     public class ClientService : IClientService
     {
+        private readonly IMapper _mapper;
         private readonly HomeBoothDbContext _db;
 
-        public ClientService(HomeBoothDbContext dbContext)
+        public ClientService(IMapper mapper, HomeBoothDbContext dbContext)
         {
+            _mapper = mapper;
             _db = dbContext;
         }
 
@@ -19,17 +24,18 @@ namespace HomeBooth.Services
         /// Adds a new client to database
         /// </summary>
         /// <param name="client"></param>
-        /// <returns>ServiceResponse<Data.Models.Client></returns>
-        public ServiceResponse<Data.Models.Client> CreateClient(Data.Models.Client client)
+        /// <returns>ServiceResponse<ApplicationUserDto></returns>
+        public ServiceResponse<ApplicationUserDto> CreateClient(Client client)
         {
             try
             {
                 client.CreatedOn = DateTime.UtcNow;
                 _db.Clients.Add(client);
                 _db.SaveChanges();
-                return new ServiceResponse<Data.Models.Client>
+
+                return new ServiceResponse<ApplicationUserDto>
                 {
-                    Data = client,
+                    Data = _mapper.Map<ApplicationUserDto>(client),
                     IsSuccess = true,
                     Message = $"client {client.Id} has been created",
                     Time = DateTime.UtcNow
@@ -37,9 +43,9 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Data.Models.Client>
+                return new ServiceResponse<ApplicationUserDto>
                 {
-                    Data = client,
+                    Data = _mapper.Map<ApplicationUserDto>(client),
                     IsSuccess = false,
                     Message = ex.Message,
                     Time = DateTime.UtcNow
@@ -98,8 +104,8 @@ namespace HomeBooth.Services
         /// <summary>
         /// Gets all clients from database
         /// </summary>
-        /// <returns>ServiceResponse<List<Data.Models.Client>></returns>
-        public ServiceResponse<List<Data.Models.Client>> GetAllClients()
+        /// <returns>ServiceResponse<List<ApplicationUserDto>></returns>
+        public ServiceResponse<List<ApplicationUserDto>> GetAllClients()
         {
             try
             {
@@ -107,9 +113,10 @@ namespace HomeBooth.Services
                     .OrderBy(client => client.LastName)
                     .AsNoTracking()
                     .ToList();
-                return new ServiceResponse<List<Data.Models.Client>>
+
+                return new ServiceResponse<List<ApplicationUserDto>>
                 {
-                    Data = clients,
+                    Data = _mapper.Map<List<ApplicationUserDto>>(clients),
                     IsSuccess = true,
                     Message = "All clients retrieved",
                     Time = DateTime.UtcNow
@@ -117,7 +124,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<List<Data.Models.Client>>
+                return new ServiceResponse<List<ApplicationUserDto>>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -131,16 +138,16 @@ namespace HomeBooth.Services
         /// Gets client by Id from database
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>ServiceResponse<Data.Models.Client></returns>
-        public ServiceResponse<Data.Models.Client> GetClientById(string id)
+        /// <returns>ServiceResponse<ApplicationUserDto></returns>
+        public ServiceResponse<ApplicationUserDto> GetClientById(string id)
         {
             try
             {
                 var client = _db.Clients.Find(id);
 
-                return new ServiceResponse<Data.Models.Client>
+                return new ServiceResponse<ApplicationUserDto>
                 {
-                    Data = client,
+                    Data = _mapper.Map<ApplicationUserDto>(client),
                     IsSuccess = true,
                     Message = $"Successfully retrieved client {client.Id}",
                     Time = DateTime.UtcNow
@@ -148,7 +155,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Data.Models.Client>
+                return new ServiceResponse<ApplicationUserDto>
                 {
                     Data = null,
                     IsSuccess = true,
@@ -163,16 +170,17 @@ namespace HomeBooth.Services
         /// </summary>
         /// <param name="id"></param>
         /// <param name="client"></param>
-        /// <returns></returns>
-        public ServiceResponse<Data.Models.Client> UpdateClient(Data.Models.Client client)
+        /// <returns>ServiceResponse<ApplicationUserDto></returns>
+        public ServiceResponse<ApplicationUserDto> UpdateClient(Client client)
         {
             try
             {
                 _db.Clients.Update(client);
                 _db.SaveChanges();
-                return new ServiceResponse<Data.Models.Client>
+
+                return new ServiceResponse<ApplicationUserDto>
                 {
-                    Data = client,
+                    Data = _mapper.Map<ApplicationUserDto>(client),
                     IsSuccess = true,
                     Message = $"Successfully updated client {client.Id}",
                     Time = DateTime.UtcNow
@@ -180,7 +188,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Data.Models.Client>
+                return new ServiceResponse<ApplicationUserDto>
                 {
                     Data = null,
                     IsSuccess = false,

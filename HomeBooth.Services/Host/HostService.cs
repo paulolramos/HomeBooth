@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using HomeBooth.Data;
+using HomeBooth.Data.Models;
+using HomeBooth.Services.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeBooth.Services
 {
     public class HostService : IHostService
     {
+        private readonly IMapper _mapper;
         private readonly HomeBoothDbContext _db;
 
-        public HostService(HomeBoothDbContext context)
+        public HostService(IMapper mapper, HomeBoothDbContext context)
         {
+            _mapper = mapper;
             _db = context;
         }
 
-        public ServiceResponse<Data.Models.Host> CreateHost(Data.Models.Host host)
+        public ServiceResponse<ApplicationUserDto> CreateHost(Host host)
         {
             try
             {
@@ -23,9 +28,9 @@ namespace HomeBooth.Services
                 _db.Hosts.Add(host);
                 _db.SaveChanges();
 
-                return new ServiceResponse<Data.Models.Host>
+                return new ServiceResponse<ApplicationUserDto>
                 {
-                    Data = host,
+                    Data = _mapper.Map<ApplicationUserDto>(host),
                     IsSuccess = true,
                     Message = $"Successfully add host {host.Id} to database",
                     Time = DateTime.UtcNow
@@ -33,7 +38,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Data.Models.Host>
+                return new ServiceResponse<ApplicationUserDto>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -43,7 +48,7 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<Data.Models.Host> DeleteHost(string id)
+        public ServiceResponse<ApplicationUserDto> DeleteHost(string id)
         {
             var now = DateTime.UtcNow;
             try
@@ -52,7 +57,7 @@ namespace HomeBooth.Services
 
                 if (host == null)
                 {
-                    return new ServiceResponse<Data.Models.Host>
+                    return new ServiceResponse<ApplicationUserDto>
                     {
                         Data = null,
                         IsSuccess = false,
@@ -65,9 +70,9 @@ namespace HomeBooth.Services
                     _db.Remove(host);
                     _db.SaveChanges();
 
-                    return new ServiceResponse<Data.Models.Host>
+                    return new ServiceResponse<ApplicationUserDto>
                     {
-                        Data = host,
+                        Data = _mapper.Map<ApplicationUserDto>(host),
                         IsSuccess = true,
                         Message = $"Successfully deleted host {id}",
                         Time = now
@@ -77,7 +82,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Data.Models.Host>
+                return new ServiceResponse<ApplicationUserDto>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -87,14 +92,14 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<List<Data.Models.Host>> GetAllHosts()
+        public ServiceResponse<List<ApplicationUserDto>> GetAllHosts()
         {
             try
             {
                 var hosts = _db.Hosts.AsNoTracking().ToList();
-                return new ServiceResponse<List<Data.Models.Host>>
+                return new ServiceResponse<List<ApplicationUserDto>>
                 {
-                    Data = hosts,
+                    Data = _mapper.Map<List<ApplicationUserDto>>(hosts),
                     IsSuccess = true,
                     Message = "successfully retrieved all hosts",
                     Time = DateTime.UtcNow
@@ -102,7 +107,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<List<Data.Models.Host>>
+                return new ServiceResponse<List<ApplicationUserDto>>
                 {
                     Data = null,
                     IsSuccess = true,
@@ -112,7 +117,7 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<Data.Models.Host> GetHostById(string id)
+        public ServiceResponse<ApplicationUserDto> GetHostById(string id)
         {
             var now = DateTime.UtcNow;
             try
@@ -120,7 +125,7 @@ namespace HomeBooth.Services
                 var host = _db.Hosts.Find(id);
                 if (host == null)
                 {
-                    return new ServiceResponse<Data.Models.Host>
+                    return new ServiceResponse<ApplicationUserDto>
                     {
                         Data = null,
                         IsSuccess = false,
@@ -130,9 +135,9 @@ namespace HomeBooth.Services
                 }
                 else
                 {
-                    return new ServiceResponse<Data.Models.Host>
+                    return new ServiceResponse<ApplicationUserDto>
                     {
-                        Data = host,
+                        Data = _mapper.Map<ApplicationUserDto>(host),
                         IsSuccess = true,
                         Message = $"Successfully located host {host.Id}",
                         Time = now
@@ -141,7 +146,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Data.Models.Host>
+                return new ServiceResponse<ApplicationUserDto>
                 {
                     Data = null,
                     IsSuccess = false,
@@ -151,16 +156,16 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<Data.Models.Host> UpdateHost(Data.Models.Host host)
+        public ServiceResponse<ApplicationUserDto> UpdateHost(Host host)
         {
             try
             {
                 _db.Update(host);
                 _db.SaveChanges();
 
-                return new ServiceResponse<Data.Models.Host>
+                return new ServiceResponse<ApplicationUserDto>
                 {
-                    Data = host,
+                    Data = _mapper.Map<ApplicationUserDto>(host),
                     IsSuccess = true,
                     Message = $"Successfully updated host {host.Id}",
                     Time = DateTime.UtcNow
@@ -168,7 +173,7 @@ namespace HomeBooth.Services
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<Data.Models.Host>
+                return new ServiceResponse<ApplicationUserDto>
                 {
                     Data = null,
                     IsSuccess = false,
