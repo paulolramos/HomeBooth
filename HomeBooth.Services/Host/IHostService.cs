@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using HomeBooth.Data.Models;
+using HomeBooth.Services.DTO;
 
 namespace HomeBooth.Services
 {
     public interface IHostService
     {
-        ServiceResponse<List<Data.Models.Host>> GetAllHosts();
-        ServiceResponse<Data.Models.Host> GetHostById(string id);
-        ServiceResponse<Data.Models.Host> CreateHost(Data.Models.Host host);
-        ServiceResponse<Data.Models.Host> UpdateHost(Data.Models.Host host);
-        ServiceResponse<Data.Models.Host> DeleteHost(string id);
+        ServiceResponse<List<ApplicationUserDto>> GetAllHosts();
+        ServiceResponse<ApplicationUserDto> GetHostById(string id);
+        ServiceResponse<ApplicationUserDto> CreateHost(Host host);
+        ServiceResponse<ApplicationUserDto> UpdateHost(Host host);
+        ServiceResponse<ApplicationUserDto> DeleteHost(string id);
     }
 }

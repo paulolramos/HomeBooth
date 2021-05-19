@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using HomeBooth.Data.Models;
+using HomeBooth.Services.DTO;
 
 namespace HomeBooth.Services
 {
     public interface IStudioListingService
     {
-        ServiceResponse<List<Data.Models.Studio>> GetAllListings();
-        ServiceResponse<List<Data.Models.Studio>> GetAllAvailableListings();
-        ServiceResponse<Data.Models.Studio> GetListingById(int id);
-        ServiceResponse<Data.Models.Studio> CreateListing(Data.Models.Studio listing);
-        ServiceResponse<Data.Models.Studio> UpdateListing(int id, Data.Models.Studio listing);
-        ServiceResponse<Data.Models.Studio> DeleteListing(int id);
+        ServiceResponse<List<StudioListingDto>> GetAllListings();
+        ServiceResponse<List<StudioListingDto>> GetAllAvailableListings();
+        ServiceResponse<StudioListingDto> GetListingById(int id);
+        ServiceResponse<StudioListingDto> CreateListing(Studio listing);
+        ServiceResponse<StudioListingDto> UpdateListing(int id, Studio listing);
+        ServiceResponse<StudioListingDto> DeleteListing(int id);
     }
 }
