@@ -9,8 +9,8 @@ namespace HomeBooth.Services
         ServiceResponse<List<StudioListingDto>> GetAllListings();
         ServiceResponse<List<StudioListingDto>> GetAllAvailableListings();
         ServiceResponse<StudioListingDto> GetListingById(int id);
-        ServiceResponse<StudioListingDto> CreateListing(Studio listing);
-        ServiceResponse<StudioListingDto> UpdateListing(int id, Studio listing);
+        ServiceResponse<StudioListingDto> CreateListing(CreateUpdateStudioDto listing);
+        ServiceResponse<StudioListingDto> UpdateListing(int id, CreateUpdateStudioDto listing);
         ServiceResponse<StudioListingDto> DeleteListing(int id);
     }
 }

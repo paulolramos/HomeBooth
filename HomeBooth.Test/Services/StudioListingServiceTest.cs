@@ -18,7 +18,14 @@ namespace HomeBooth.Test.Services
             var _mapper = TestMapper.GetTestMapper();
             var _studioListingService = new StudioListingService(_context, _mapper);
 
-            var newStudio = new Studio { Name = "Chaos Records", Description = "The crazy studio" };
+            var newStudio = new CreateUpdateStudioDto
+            {
+                Name = "Chaos Records",
+                Description = "The crazy studio",
+                IsBooked = false,
+                Rate = 23
+            };
+
             var response = _studioListingService.CreateListing(newStudio);
 
             Assert.IsType<ServiceResponse<StudioListingDto>>(response);
@@ -93,13 +100,21 @@ namespace HomeBooth.Test.Services
             var _mapper = TestMapper.GetTestMapper();
             var _studioListingService = new StudioListingService(_context, _mapper);
 
-            var studio = _context.Studios.Find(2);
-            studio.Name = "Basil's Place";
+            var update = new CreateUpdateStudioDto
+            {
+                Name = "Basil's Place", // updated name
+                Description = "We are the best studio",
+                IsBooked = false,
+                Rate = 20
+            };
 
-            var response = _studioListingService.UpdateListing(2, studio);
+            var response = _studioListingService.UpdateListing(2, update);
             Assert.IsType<ServiceResponse<StudioListingDto>>(response);
             Assert.IsType<StudioListingDto>(response.Data);
             Assert.Equal("Basil's Place", response.Data.Name);
+            Assert.Equal("We are the best studio", response.Data.Description);
+            Assert.False(response.Data.IsBooked);
+            Assert.Equal(20, response.Data.Rate);
             Assert.NotEqual("The Hive", response.Data.Name);
             Assert.True(response.IsSuccess);
         }

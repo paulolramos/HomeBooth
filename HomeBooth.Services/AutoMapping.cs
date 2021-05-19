@@ -12,6 +12,8 @@ namespace HomeBooth.Services
 
             CreateMap<Studio, StudioListingDto>();
             CreateMap<StudioListingDto, Studio>();
+            CreateMap<CreateUpdateStudioDto, Studio>();
+
             CreateMap<StudioAddress, StudioAddressDto>();
             CreateMap<StudioItem, StudioItemDto>();
             CreateMap<StudioService, StudioServiceDto>();

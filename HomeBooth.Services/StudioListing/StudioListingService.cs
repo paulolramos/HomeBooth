@@ -20,18 +20,22 @@ namespace HomeBooth.Services
             _mapper = mapper;
         }
 
-        public ServiceResponse<StudioListingDto> CreateListing(Studio listing)
+        public ServiceResponse<StudioListingDto> CreateListing(CreateUpdateStudioDto listing)
         {
+            var studio = _mapper.Map<Studio>(listing);
+            studio.CreatedOn = DateTime.UtcNow;
+            studio.UpdatedOn = DateTime.UtcNow;
+
             try
             {
-                _db.Studios.Add(listing);
+                _db.Studios.Add(studio);
                 _db.SaveChanges();
 
                 return new ServiceResponse<StudioListingDto>
                 {
-                    Data = _mapper.Map<StudioListingDto>(listing),
+                    Data = _mapper.Map<StudioListingDto>(studio),
                     IsSuccess = true,
-                    Message = $"Successfully created studio {listing.Id} to database",
+                    Message = $"Successfully created studio {studio.Id} to database",
                     Time = DateTime.UtcNow
                 };
             }
@@ -195,35 +199,24 @@ namespace HomeBooth.Services
             }
         }
 
-        public ServiceResponse<StudioListingDto> UpdateListing(int id, Studio listing)
+        public ServiceResponse<StudioListingDto> UpdateListing(int id, CreateUpdateStudioDto listing)
         {
+            var studio = _mapper.Map<Studio>(listing);
+            studio.Id = id;
+
             try
             {
-                var studio = _db.Studios.Find(id);
+                _db.Studios.Update(studio);
+                _db.SaveChanges();
 
-                if (studio is not null)
+                return new ServiceResponse<StudioListingDto>
                 {
-                    _db.Studios.Update(listing);
-                    _db.SaveChanges();
+                    Data = _mapper.Map<StudioListingDto>(studio),
+                    IsSuccess = true,
+                    Message = $"Successfully updated studio {studio.Id}.",
+                    Time = DateTime.UtcNow
+                };
 
-                    return new ServiceResponse<StudioListingDto>
-                    {
-                        Data = _mapper.Map<StudioListingDto>(studio),
-                        IsSuccess = true,
-                        Message = $"Successfully updated studio {studio.Id}.",
-                        Time = DateTime.UtcNow
-                    };
-                }
-                else
-                {
-                    return new ServiceResponse<StudioListingDto>
-                    {
-                        Data = null,
-                        IsSuccess = false,
-                        Message = $"Unable to find studio",
-                        Time = DateTime.UtcNow
-                    };
-                }
             }
             catch (Exception ex)
             {
