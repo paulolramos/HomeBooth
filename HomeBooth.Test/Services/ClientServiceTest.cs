@@ -3,52 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using HomeBooth.Data.Models;
 using HomeBooth.Services;
-using HomeBooth.Services.Client;
+using HomeBooth.Services.DTO;
 using Xunit;
 
 namespace HomeBooth.Test.Services
 {
     public class ClientServiceTest
     {
-        private readonly Client testClient = new Client
-        {
-            CreatedOn = DateTime.UtcNow,
-            Email = "test@email.com",
-            FirstName = "Basil",
-            LastName = "Pilsner",
-            PhoneNumber = "XXX-XXX-XXXX",
-        };
-
-        private readonly List<Client> testClients = new List<Client>
-        {
-            new Client
-            {
-                CreatedOn = DateTime.UtcNow,
-                Email = "test@email.com",
-                FirstName = "Basil",
-                LastName = "Pilsner",
-                PhoneNumber = "XXX-XXX-XXXX",
-            },
-            new Client
-            {
-                CreatedOn = DateTime.UtcNow,
-                Email = "test2@email.com",
-                FirstName = "Fatboi",
-                LastName = "Pilsner",
-                PhoneNumber = "XXX-XXX-XXXX",
-            },
-        };
-
         [Fact]
         public void ShouldCreateClient()
         {
             using var _context = TestContext.GetContext();
-            var _clientService = new ClientService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _clientService = new ClientService(_mapper, _context);
 
-            var response = _clientService.CreateClient(testClient);
-            Assert.True(response.Data.IsClient);
-            Assert.IsType<ServiceResponse<Client>>(response);
-            Assert.Equal("Basil", response.Data.FirstName);
+            var newClient = new Client
+            {
+                CreatedOn = DateTime.UtcNow,
+                Email = "test@gmail.com",
+                FirstName = "Rudy",
+                LastName = "Pilsner",
+                PhoneNumber = "424-757-8007",
+            };
+
+            var response = _clientService.CreateClient(newClient);
+
+            Assert.IsType<ServiceResponse<HomeBooth.Services.DTO.ApplicationUserDto>>(response);
+            Assert.Equal("Rudy", response.Data.FirstName);
             Assert.Equal("Pilsner", response.Data.LastName);
             Assert.True(response.IsSuccess);
         }
@@ -57,28 +38,26 @@ namespace HomeBooth.Test.Services
         public void ShouldDeleteClient()
         {
             using var _context = TestContext.GetContext();
-            var _clientService = new ClientService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _clientService = new ClientService(_mapper, _context);
 
-            _clientService.CreateClient(testClient);
-            var response = _clientService.DeleteClient(testClient.Id);
+            var response = _clientService.DeleteClient("id1");
+
             Assert.IsType<ServiceResponse<bool>>(response);
             Assert.True(response.IsSuccess);
-            Assert.Equal(0, _context.Clients.Count());
+            Assert.Equal(1, _context.Clients.Count());
         }
 
         [Fact]
         public void ShouldGetAllClients()
         {
             using var _context = TestContext.GetContext();
-            var _clientService = new ClientService(_context);
-
-            foreach (var client in testClients)
-            {
-                _clientService.CreateClient(client);
-            }
+            var _mapper = TestMapper.GetTestMapper();
+            var _clientService = new ClientService(_mapper, _context);
 
             var response = _clientService.GetAllClients();
-            Assert.IsType<ServiceResponse<List<Client>>>(response);
+
+            Assert.IsType<ServiceResponse<List<HomeBooth.Services.DTO.ApplicationUserDto>>>(response);
             Assert.True(response.IsSuccess);
             Assert.Equal(2, _context.Clients.Count());
         }
@@ -87,29 +66,30 @@ namespace HomeBooth.Test.Services
         public void ShouldGetClientById()
         {
             using var _context = TestContext.GetContext();
-            var _clientService = new ClientService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _clientService = new ClientService(_mapper, _context);
 
-            var response = _clientService.CreateClient(testClient);
-            var client = _clientService.GetClientById(response.Data.Id);
+            var client = _clientService.GetClientById("id2");
 
-            Assert.IsType<ServiceResponse<Client>>(client);
-            Assert.Equal("Basil", response.Data.FirstName);
-            Assert.Equal("Pilsner", response.Data.LastName);
-            Assert.True(response.IsSuccess);
+            Assert.IsType<ServiceResponse<HomeBooth.Services.DTO.ApplicationUserDto>>(client);
+            Assert.Equal("Fatboi", client.Data.FirstName);
+            Assert.Equal("Pilsner", client.Data.LastName);
+            Assert.True(client.IsSuccess);
         }
 
         [Fact]
         public void ShouldUpdateClient()
         {
             using var _context = TestContext.GetContext();
-            var _clientService = new ClientService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _clientService = new ClientService(_mapper, _context);
 
-            var response = _clientService.CreateClient(testClient);
-            var createdClient = response.Data;
-            createdClient.FirstName = "Rudy";
-            var updateResponse = _clientService.UpdateClient(createdClient);
+            var client = _context.Clients.Find("id1");
 
-            Assert.IsType<ServiceResponse<Client>>(updateResponse);
+            client.FirstName = "Rudy";
+            var updateResponse = _clientService.UpdateClient(client);
+
+            Assert.IsType<ServiceResponse<HomeBooth.Services.DTO.ApplicationUserDto>>(updateResponse);
             Assert.True(updateResponse.IsSuccess);
             Assert.Equal("Rudy", updateResponse.Data.FirstName);
             Assert.Equal("Pilsner", updateResponse.Data.LastName);

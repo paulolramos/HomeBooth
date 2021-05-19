@@ -1,57 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using HomeBooth.Data.Models;
 using HomeBooth.Services;
-using HomeBooth.Services.Host;
+using HomeBooth.Services.DTO;
 using Xunit;
 
 namespace HomeBooth.Test.Services
 {
     public class HostServiceTest
     {
-        private readonly Host host = new Host
-        {
-            CreatedOn = DateTime.UtcNow,
-            Email = "roger@email.com",
-            FirstName = "Roger",
-            LastName = "Waters",
-            PhoneNumber = "XXX-XXX-XXX"
-        };
-
-        private readonly List<Host> hosts = new List<Host>
-        {
-            new Host
-            {
-                CreatedOn = DateTime.UtcNow,
-                Email = "roger@email.com",
-                FirstName = "Roger",
-                LastName = "Waters",
-                PhoneNumber = "XXX-XXX-XXX"
-            },
-            new Host
-            {
-                CreatedOn = DateTime.UtcNow,
-                Email = "david@email.com",
-                FirstName = "David",
-                LastName = "Gilmour",
-                PhoneNumber = "XXX-XXX-XXX"
-            },
-        };
-
         [Fact]
         public void ShouldGetAllHosts()
         {
             using var _context = TestContext.GetContext();
-            var _hostService = new HostService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _hostService = new HostService(_mapper, _context);
 
-            foreach (var host in hosts)
-            {
-                _hostService.CreateHost(host);
-            }
             var response = _hostService.GetAllHosts();
 
-            Assert.IsType<ServiceResponse<List<Host>>>(response);
+            Assert.IsType<ServiceResponse<List<ApplicationUserDto>>>(response);
             Assert.NotNull(response.Data);
             Assert.Equal(2, response.Data.Count);
             Assert.True(response.IsSuccess);
@@ -61,12 +27,11 @@ namespace HomeBooth.Test.Services
         public void ShouldGetHostById()
         {
             using var _context = TestContext.GetContext();
-            var _hostService = new HostService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _hostService = new HostService(_mapper, _context);
 
-            var createdHost = _hostService.CreateHost(host);
-
-            var response = _hostService.GetHostById(createdHost.Data.Id);
-            Assert.IsType<ServiceResponse<Host>>(response);
+            var response = _hostService.GetHostById("1");
+            Assert.IsType<ServiceResponse<ApplicationUserDto>>(response);
             Assert.NotNull(response.Data);
             Assert.Equal("Roger", response.Data.FirstName);
         }
@@ -75,31 +40,34 @@ namespace HomeBooth.Test.Services
         public void ShouldCreateHost()
         {
             using var _context = TestContext.GetContext();
-            var _hostService = new HostService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _hostService = new HostService(_mapper, _context);
 
-            var response = _hostService.CreateHost(host);
+            var newHost = new Host { Id = "3", FirstName = "Richard" };
 
-            Assert.True(response.Data.IsHost);
-            Assert.IsType<ServiceResponse<Host>>(response);
+            var response = _hostService.CreateHost(newHost);
+
+            Assert.IsType<ServiceResponse<ApplicationUserDto>>(response);
             Assert.NotNull(response.Data);
-            Assert.Equal("Roger", response.Data.FirstName);
+            Assert.Equal("Richard", response.Data.FirstName);
         }
 
         [Fact]
         public void ShouldUpdateHost()
         {
             using var _context = TestContext.GetContext();
-            var _hostService = new HostService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _hostService = new HostService(_mapper, _context);
 
-            var hostResponse = _hostService.CreateHost(host);
+            var host = _context.Hosts.Find("1");
 
             // Update
-            hostResponse.Data.FirstName = "Richard";
-            hostResponse.Data.LastName = "Wright";
-            var updatedHost = hostResponse.Data;
-            var response = _hostService.UpdateHost(updatedHost);
+            host.FirstName = "Richard";
+            host.LastName = "Wright";
 
-            Assert.IsType<ServiceResponse<Host>>(response);
+            var response = _hostService.UpdateHost(host);
+
+            Assert.IsType<ServiceResponse<ApplicationUserDto>>(response);
             Assert.NotNull(response.Data);
             Assert.Equal("Richard", response.Data.FirstName);
             Assert.Equal("Wright", response.Data.LastName);
@@ -109,20 +77,11 @@ namespace HomeBooth.Test.Services
         public void ShouldDeleteHost()
         {
             using var _context = TestContext.GetContext();
-            var _hostService = new HostService(_context);
+            var _mapper = TestMapper.GetTestMapper();
+            var _hostService = new HostService(_mapper, _context);
 
-            foreach (var host in hosts)
-            {
-                _hostService.CreateHost(host);
-            }
-
-            var allHosts = _hostService.GetAllHosts();
-            var firstHost = allHosts.Data[0];
-
-            var response = _hostService.DeleteHost(firstHost.Id);
-            Assert.IsType<ServiceResponse<Host>>(response);
-            // ensure there's only 1 item now
-            Assert.Single(_hostService.GetAllHosts().Data);
+            var response = _hostService.DeleteHost("1");
+            Assert.IsType<ServiceResponse<ApplicationUserDto>>(response);
             Assert.NotNull(response.Data);
             Assert.Equal("Roger", response.Data.FirstName);
         }
