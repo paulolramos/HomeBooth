@@ -11,5 +11,9 @@
       <Folder Include="StudioListing\" />
       <Folder Include="Client\" />
       <Folder Include="Reservation\" />
+      <Folder Include="DTO\" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     </ItemGroup>
 </Project>

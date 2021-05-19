@@ -1,5 +1,5 @@
 ﻿using System;
-namespace HomeBooth.Web.Server.DTOs
+namespace HomeBooth.Services.DTO
 {
     public class StudioAddressDto
     {

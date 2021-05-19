@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace HomeBooth.Web.Server.DTOs
+namespace HomeBooth.Services.DTO
 {
     public class StudioListingDto
     {

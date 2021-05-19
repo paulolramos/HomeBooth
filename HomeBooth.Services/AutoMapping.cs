@@ -1,14 +1,17 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using HomeBooth.Data.Models;
+using HomeBooth.Services.DTO;
 
-namespace HomeBooth.Web.Server.DTOs
+namespace HomeBooth.Services
 {
     public class AutoMapping : Profile
     {
         public AutoMapping()
         {
+            CreateMap<ApplicationUser, ApplicationUserDto>();
+
             CreateMap<Studio, StudioListingDto>();
+            CreateMap<StudioListingDto, Studio>();
             CreateMap<StudioAddress, StudioAddressDto>();
             CreateMap<StudioItem, StudioItemDto>();
             CreateMap<StudioService, StudioServiceDto>();

@@ -16,7 +16,6 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Client\HomeBooth.Web.Client.csproj" />
@@ -27,6 +26,5 @@
 	<ItemGroup>
 		<Folder Include="Areas\Identity\Pages\Account\" />
 		<Folder Include="Areas\Identity\Services\" />
-		<Folder Include="DTOs\" />
 	</ItemGroup>
 </Project>
